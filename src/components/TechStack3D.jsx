@@ -1,132 +1,223 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, Center, Float } from '@react-three/drei';
+import { Text, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Komponen 3D Macropad Individual
-function Macropad({ position, techText, title, activeColor, keysColors, index }) {
-  const groupRef = useRef();
-  const [hovered, setHovered] = useState(false);
-  const [textScale, setTextScale] = useState(0);
-  const [textOpacity, setTextOpacity] = useState(0);
+// Komponen Keycap Individual yang dapat ditekan (pressable) dan merespons hover
+function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover }) {
+  const meshRef = useRef();
+  const [pressed, setPressed] = useState(false);
 
-  // Animasi hover & floating idle menggunakan useFrame
-  useFrame((state) => {
-    if (!groupRef.current) return;
+  // Menganimasikan penekanan tombol (keypress) saat di-hover / diklik
+  useFrame(() => {
+    if (!meshRef.current) return;
 
-    // 1. Idle Floating Animation (Sine Wave)
-    const time = state.clock.getElapsedTime();
-    const idleY = Math.sin(time * 2 + index * 1.5) * 0.08;
-
-    // 2. Target Y Position (bergerak naik saat di-hover)
-    const targetY = hovered ? 0.6 : 0;
-    
-    // Lerping posisi Y secara smooth
-    groupRef.current.position.y = THREE.MathUtils.lerp(
-      groupRef.current.position.y,
-      position[1] + targetY + idleY,
-      0.1
-    );
-
-    // Lerping rotasi agar merespons hover
-    const targetRotX = hovered ? 0.2 : 0.1; // sedikit mendongak saat di-hover
-    const targetRotY = hovered ? 0.4 : -0.2; // sedikit memutar saat di-hover
-    
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.1);
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.1);
-
-    // 3. Lerping skala & opacity teks holografis melayang
-    const targetScale = hovered ? 1 : 0;
-    const targetOpacity = hovered ? 1 : 0;
-    setTextScale((prev) => THREE.MathUtils.lerp(prev, targetScale, 0.15));
-    setTextOpacity((prev) => THREE.MathUtils.lerp(prev, targetOpacity, 0.15));
+    // Jika di-hover, posisi Y turun sedikit (efek ditekan)
+    const targetY = isHovered ? 0.08 : 0.15;
+    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.2);
   });
-
-  // Susunan koordinat untuk 4 keycaps (2x2 grid) di atas macropad
-  const keys = [
-    { pos: [-0.4, 0.22, -0.3] },
-    { pos: [0.4, 0.22, -0.3] },
-    { pos: [-0.4, 0.22, 0.3] },
-    { pos: [0.4, 0.22, 0.3] }
-  ];
 
   return (
     <group
-      ref={groupRef}
-      position={[position[0], position[1], position[2]]}
+      position={position}
       onPointerOver={(e) => {
         e.stopPropagation();
-        setHovered(true);
+        onHover(desc, label);
         document.body.style.cursor = 'pointer';
       }}
       onPointerOut={(e) => {
-        setHovered(false);
+        onUnhover();
         document.body.style.cursor = 'default';
       }}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
     >
-      {/* 1. TEXT HOLOGRAFIS (Floating Text) */}
-      <group position={[0, 1.4, 0]} scale={textScale}>
-        {/* Latar belakang glow melayang halus */}
-        <mesh position={[0, 0, -0.05]}>
-          <planeGeometry args={[2.5, 1.0]} />
-          <meshBasicMaterial 
-            color={activeColor} 
-            transparent 
-            opacity={textOpacity * 0.15} 
-            depthWrite={false}
-          />
-        </mesh>
-        
+      {/* Batang Switch / Dudukan Keycap */}
+      <mesh position={[0, 0.02, 0]}>
+        <boxGeometry args={[0.3, 0.15, 0.3]} />
+        <meshStandardMaterial color="#262626" roughness={0.8} />
+      </mesh>
+
+      {/* Kepala Keycap (Tapered Cherry MX Style) */}
+      <mesh
+        ref={meshRef}
+        castShadow
+        receiveShadow
+        position={[0, 0.15, 0]}
+      >
+        <boxGeometry args={[0.48, 0.2, 0.48]} />
+        <meshStandardMaterial
+          color={color}
+          roughness={0.3}
+          metalness={0.1}
+          emissive={isHovered ? color : '#000000'}
+          emissiveIntensity={isHovered ? 0.5 : 0}
+        />
+
+        {/* Teks Label di atas Tombol Keycap */}
         <Text
-          fontSize={0.16}
-          color="#18181b" // Teks gelap agar kontras
+          position={[0, 0.11, 0]}
+          rotation={[-Math.PI / 2, 0, 0]} // Rata di atas tombol
+          fontSize={0.09}
+          color="#ffffff"
+          fontWeight="bold"
           anchorX="center"
           anchorY="middle"
-          font="https://fonts.gstatic.com/s/spacegrotesk/v15/V8mQoQDjQSkFtoMM3T6r8E79FGo5Q1k.woff"
-          maxWidth={2.2}
+          strokeColor="#000000"
+          strokeWidth={0.005}
+        >
+          {label}
+        </Text>
+      </mesh>
+    </group>
+  );
+}
+
+// Komponen Utama Keyboard 3D Tech Stack Assembly
+function KeyboardAssembly() {
+  const keyboardRef = useRef();
+  const [activeDesc, setActiveDesc] = useState('DEKATKAN KURSOR UNTUK MENCOBA');
+  const [activeKey, setActiveKey] = useState('');
+
+  // Data layout keycaps (Grid 5 Kolom x 3 Baris) selaras dengan Tech Stack Anda
+  const keycapsData = [
+    // Baris 0 (Top - Frontend Core)
+    { label: 'HTML', color: '#e34f26', col: 0, row: 0, desc: 'HTML5: Struktur & Markah Web Modern' },
+    { label: 'CSS', color: '#1572b6', col: 1, row: 0, desc: 'CSS3: Tata Letak Modern & Animasi Visual' },
+    { label: 'JS', color: '#f7df1e', col: 2, row: 0, desc: 'JavaScript (ES6+): Pemrograman & Logika Interaktif' },
+    { label: 'TS', color: '#3178c6', col: 3, row: 0, desc: 'TypeScript: Pengetikan Kuat untuk Aplikasi Skala Besar' },
+    { label: 'React', color: '#00d8ff', col: 4, row: 0, desc: 'React: Pustaka Deklaratif untuk UI Komponen Modern' },
+
+    // Baris 1 (Middle - Styling & Backend)
+    { label: 'TW', color: '#38bdf8', col: 0, row: 1, desc: 'Tailwind CSS: Desain Cepat dengan Pendekatan Utility-First' },
+    { label: 'FM', color: '#ff007f', col: 1, row: 1, desc: 'Framer Motion: Animasi Komponen React yang Mulus & Fluid' },
+    { label: 'PHP', color: '#777bb4', col: 2, row: 1, desc: 'PHP: Bahasa Pemrograman Server-Side Utama' },
+    { label: 'LV', color: '#ff2d20', col: 3, row: 1, desc: 'Laravel: Framework PHP Elegan & Berfitur Lengkap' },
+    { label: 'Node', color: '#43853d', col: 4, row: 1, desc: 'Node.js: Runtime Javascript Berkinerja Tinggi di Sisi Server' },
+
+    // Baris 2 (Bottom - Database, Ops, & Tools)
+    { label: 'Supa', color: '#3ecf8e', col: 0, row: 2, desc: 'Supabase: PostgreSQL & Backend-as-a-Service Real-Time' },
+    { label: 'MySQL', color: '#00758f', col: 1, row: 2, desc: 'MySQL: Sistem Manajemen Database Relasional Terpopuler' },
+    { label: 'Docker', color: '#0db7ed', col: 2, row: 2, desc: 'Docker: standardisasi Kontainerisasi untuk Deployment' },
+    { label: 'Git', color: '#f05032', col: 3, row: 2, desc: 'Git: Kolaborasi & Sistem Kontrol Versi Kode' },
+    { label: 'Vite', color: '#bd34fe', col: 4, row: 2, desc: 'Vite: Build Tool Cepat untuk Pengembangan Web Modern' }
+  ];
+
+  // Efek Floating Idle untuk Seluruh Keyboard
+  useFrame((state) => {
+    if (!keyboardRef.current) return;
+    const time = state.clock.getElapsedTime();
+
+    // Rotasi melayang lembut (Isometric Isometric tilt angle)
+    keyboardRef.current.rotation.x = -0.4 + Math.sin(time * 0.4) * 0.02;
+    keyboardRef.current.rotation.y = 0.55 + Math.sin(time * 0.3) * 0.03;
+
+    // Naik turun melayang lembut
+    keyboardRef.current.position.y = -0.3 + Math.sin(time * 0.5) * 0.05;
+  });
+
+  return (
+    <group ref={keyboardRef} position={[0, -0.3, 0]}>
+      {/* 1. SCREEN PROYEKSI HOLOGRAFIS BEKANG KEYBOARD */}
+      <group position={[0, 1.5, -1.2]} rotation={[0.2, -0.2, 0]}>
+        {/* Latar Belakang Hologram yang Bercahaya */}
+        <mesh>
+          <planeGeometry args={[4.2, 0.7]} />
+          <meshBasicMaterial
+            color={activeKey ? '#c084fc' : '#818cf8'}
+            transparent
+            opacity={0.08}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+
+        {/* Frame Glow Border Tipis */}
+        <mesh position={[0, 0, -0.01]}>
+          <planeGeometry args={[4.22, 0.72]} />
+          <meshBasicMaterial
+            color={activeKey ? '#a855f7' : '#6366f1'}
+            wireframe
+            transparent
+            opacity={0.3}
+          />
+        </mesh>
+
+        {/* Teks Proyeksi Deskripsi Teknologi */}
+        <Text
+          fontSize={0.14}
+          color={activeKey ? '#a855f7' : '#4f46e5'}
+          fontWeight="bold"
+          anchorX="center"
+          anchorY="middle"
+          maxWidth={4.0}
           textAlign="center"
         >
-          {techText}
+          {activeDesc}
         </Text>
       </group>
 
-      {/* 2. BASE BOARD MACROPAD */}
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[1.8, 0.3, 1.4]} />
-        <meshStandardMaterial 
-          color={hovered ? '#ffffff' : '#e5e5e5'} 
-          roughness={0.2}
+      {/* 2. BASE BOARD KEYBOARD / CASE (Sasis Kokoh Warna Gelap) */}
+      <mesh castShadow receiveShadow position={[0, 0, 0]}>
+        <boxGeometry args={[3.8, 0.22, 2.5]} />
+        <meshStandardMaterial
+          color="#171717"
+          roughness={0.4}
           metalness={0.8}
-          emissive={hovered ? activeColor : '#000000'}
-          emissiveIntensity={hovered ? 0.3 : 0}
         />
       </mesh>
 
-      {/* 3. KEYCAPS (4 Tombol di atasnya) */}
-      {keys.map((key, kIdx) => (
-        <mesh 
-          key={kIdx} 
-          position={key.pos} 
-          castShadow 
-          receiveShadow
-        >
-          <boxGeometry args={[0.45, 0.2, 0.45]} />
-          <meshStandardMaterial 
-            color={hovered ? activeColor : keysColors[kIdx % keysColors.length]} 
-            roughness={0.4}
-            metalness={0.2}
-            emissive={hovered ? activeColor : '#000000'}
-            emissiveIntensity={hovered ? 0.5 : 0}
-          />
-        </mesh>
-      ))}
+      {/* Plat Frame Atas (Untuk menahan switch) */}
+      <mesh castShadow position={[0, 0.08, 0]}>
+        <boxGeometry args={[3.64, 0.08, 2.34]} />
+        <meshStandardMaterial
+          color="#262626"
+          roughness={0.5}
+          metalness={0.9}
+        />
+      </mesh>
 
-      {/* 4. UNDERGLOW LED EFFECT */}
-      <pointLight 
-        position={[0, -0.2, 0]} 
-        color={activeColor} 
-        intensity={hovered ? 3.5 : 0.8} 
-        distance={2.5}
+      {/* Kaki Karet Belakang (Membuat keyboard mendongak ke depan) */}
+      <mesh position={[0, -0.15, -0.9]}>
+        <boxGeometry args={[3.4, 0.15, 0.2]} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.9} />
+      </mesh>
+
+      {/* 3. KEYCAPS GRID ASSEMBLY */}
+      {keycapsData.map((key, idx) => {
+        // Menghitung koordinat posisi X dan Z berdasarkan baris dan kolom grid
+        const spacingX = 0.65;
+        const spacingZ = 0.65;
+
+        // Memusatkan posisi grid di tengah-tengah keyboard sasis
+        const posX = (key.col - 2) * spacingX;
+        const posZ = (key.row - 1) * spacingZ;
+
+        return (
+          <Keycap
+            key={idx}
+            label={key.label}
+            color={key.color}
+            position={[posX, 0.06, posZ]}
+            desc={key.desc}
+            isHovered={activeKey === key.label}
+            onHover={(desc, label) => {
+              setActiveDesc(desc);
+              setActiveKey(label);
+            }}
+            onUnhover={() => {
+              setActiveDesc('DEKATKAN KURSOR UNTUK MENCOBA');
+              setActiveKey('');
+            }}
+          />
+        );
+      })}
+
+      {/* 4. UNDERGLOW LED KEYBOARD (Glow warna-warni di sekeliling bawah sasis) */}
+      <pointLight
+        position={[0, -0.3, 0]}
+        color={activeKey ? '#a855f7' : '#6366f1'}
+        intensity={3.0}
+        distance={4}
       />
     </group>
   );
@@ -134,30 +225,6 @@ function Macropad({ position, techText, title, activeColor, keysColors, index })
 
 // Komponen Utama Section Tech Stack
 export default function TechStack3D() {
-  const macropadsData = [
-    {
-      title: 'Frontend',
-      techText: "Frontend:\nReact, Tailwind CSS,\nFramer Motion",
-      position: [-2.6, 0, 0],
-      activeColor: '#06b6d4', // Cyan
-      keysColors: ['#0891b2', '#155e75', '#22d3ee', '#1e293b']
-    },
-    {
-      title: 'Backend',
-      techText: "Backend:\nLaravel, Node.js,\nPHP & Express",
-      position: [0, 0, 0],
-      activeColor: '#a855f7', // Purple
-      keysColors: ['#7c3aed', '#5b21b6', '#c084fc', '#1e293b']
-    },
-    {
-      title: 'Database & Ops',
-      techText: "Database & Ops:\nSupabase, MySQL,\nDocker, Git",
-      position: [2.6, 0, 0],
-      activeColor: '#10b981', // Emerald Green
-      keysColors: ['#059669', '#064e3b', '#34d399', '#1e293b']
-    }
-  ];
-
   return (
     <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#FAF9F6] text-neutral-800 relative overflow-hidden flex flex-col items-center">
       {/* Visual background blurred blob for space-age vibe */}
@@ -167,66 +234,50 @@ export default function TechStack3D() {
         {/* Header Section */}
         <div className="text-center space-y-4 mb-10 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-purple-50 border border-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs">
-            <span>Interactive 3D Tech Stack</span>
+            <span>Interactive 3D Mechanical Keyboard</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-neutral-900">
             Kekuatan <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Teknologi</span> Saya
           </h2>
           <p className="text-neutral-500 text-sm md:text-base font-light">
-            Dekatkan kursor Anda ke atas setiap **3D Macropad** di bawah ini untuk memproyeksikan tumpukan teknologi secara holografis.
+            Sentuh atau dekatkan kursor Anda ke setiap **tombol mekanikal (keycap)** di bawah ini untuk melihat detail teknologi secara interaktif.
           </p>
         </div>
 
-        {/* 3D CANVAS AREA */}
-        <div className="w-full h-[400px] md:h-[480px] bg-white/40 border border-neutral-200/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-xs hover:border-purple-200/50 transition-colors relative">
+        {/* 3D CANVAS AREA (Beautiful Isometric Mechanical Keyboard) */}
+        <div className="w-full h-[440px] md:h-[520px] bg-white/40 border border-neutral-200/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-xs hover:border-purple-200/50 transition-colors relative">
           <Canvas
             shadows
-            camera={{ position: [0, 2.5, 4.5], fov: 45 }}
+            camera={{ position: [0, 2.8, 5.0], fov: 42 }}
+            style={{ width: '100%', height: '100%' }}
           >
             {/* Ambient Light - Soft global light */}
-            <ambientLight intensity={0.4} />
+            <ambientLight intensity={0.5} />
 
             {/* Main Directional Light - Casting crisp but soft shadows */}
             <directionalLight
               castShadow
-              position={[2.5, 8, 5]}
-              intensity={1.2}
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-              shadow-camera-far={20}
-              shadow-camera-left={-6}
-              shadow-camera-right={6}
-              shadow-camera-top={6}
-              shadow-camera-bottom={-6}
+              position={[3.0, 9, 4]}
+              intensity={1.3}
               shadow-bias={-0.001}
             />
 
             {/* Fill Light for subtle dramatic reflection */}
-            <directionalLight 
-              position={[-4, 2, -2]} 
-              intensity={0.6} 
-              color="#a855f7" 
+            <directionalLight
+              position={[-4, 2, -2]}
+              intensity={0.7}
+              color="#a855f7"
             />
 
-            {/* Rendering the 3 Macropads */}
+            {/* Assembly model keyboard di tengah canvas */}
             <Center>
-              {macropadsData.map((mac, idx) => (
-                <Macropad
-                  key={idx}
-                  index={idx}
-                  position={mac.position}
-                  title={mac.title}
-                  techText={mac.techText}
-                  activeColor={mac.activeColor}
-                  keysColors={mac.keysColors}
-                />
-              ))}
+              <KeyboardAssembly />
             </Center>
 
             {/* Ground Plane to receive shadows */}
-            <mesh 
-              rotation={[-Math.PI / 2, 0, 0]} 
-              position={[0, -0.6, 0]} 
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, -1.0, 0]}
               receiveShadow
             >
               <planeGeometry args={[30, 30]} />
@@ -237,7 +288,7 @@ export default function TechStack3D() {
           {/* Floating Instructions Layer */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none flex items-center space-x-2 bg-neutral-900/5 text-neutral-600 text-xs px-3.5 py-2 rounded-full backdrop-blur-xs border border-neutral-200/40">
             <svg className="w-3.5 h-3.5 animate-bounce text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>
-            <span>Gunakan Mouse / Sentuhan untuk Interaksi 3D</span>
+            <span>Gerakkan kursor untuk menekan & melihat info tombol</span>
           </div>
         </div>
       </div>

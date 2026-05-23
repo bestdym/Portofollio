@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AboutExperience from './components/AboutExperience';
 import PortfolioAchievements from './components/PortfolioAchievements';
 import TechStack3D from './components/TechStack3D';
+import ContactSection from './components/ContactSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Mail, Compass } from 'lucide-react';
 
@@ -28,8 +29,8 @@ function App() {
         <div className="hidden md:flex items-center space-x-8">
           <a href="#" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Home</a>
           <a href="#about" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">About & Experience</a>
-          <a href="#tech" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Tech Stack</a>
           <a href="#portfolio" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Portfolio</a>
+          <a href="#tech" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Tech Stack</a>
           <a href="#contact" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Contact</a>
         </div>
 
@@ -76,6 +77,20 @@ function App() {
               className="text-lg font-medium text-neutral-800 hover:text-purple-600"
             >
               About & Experience
+            </a>
+            <a 
+              href="#portfolio" 
+              onClick={toggleMobileMenu} 
+              className="text-lg font-medium text-neutral-800 hover:text-purple-600"
+            >
+              Portfolio
+            </a>
+            <a 
+              href="#tech" 
+              onClick={toggleMobileMenu} 
+              className="text-lg font-medium text-neutral-800 hover:text-purple-600"
+            >
+              Tech Stack
             </a>
             <a 
               href="#contact" 
@@ -155,14 +170,19 @@ function App() {
         <AboutExperience />
       </div>
 
+      {/* PORTFOLIO & ACHIEVEMENTS SECTION */}
+      <div id="portfolio">
+        <PortfolioAchievements />
+      </div>
+
       {/* TECH STACK SECTION */}
       <div id="tech">
         <TechStack3D />
       </div>
 
-      {/* PORTFOLIO & ACHIEVEMENTS SECTION */}
-      <div id="portfolio">
-        <PortfolioAchievements />
+      {/* CONTACT SECTION */}
+      <div id="contact">
+        <ContactSection />
       </div>
 
       {/* FOOTER */}
@@ -172,7 +192,7 @@ function App() {
             <Compass className="w-4 h-4 text-purple-600" />
             <span>Bestdym<span className="text-purple-600">.</span></span>
           </div>
-          <p>© {new Date().getFullYear()} Bestdym. All rights reserved.</p>
+          <p>Designed & Built by Dimas Nurdiansyah © 2026</p>
           <div className="flex space-x-6">
             <a href="#" className="hover:text-purple-600 transition-colors">Privacy</a>
             <a href="#" className="hover:text-purple-600 transition-colors">Terms</a>
