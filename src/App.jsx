@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import AboutExperience from './components/AboutExperience';
+import PortfolioAchievements from './components/PortfolioAchievements';
+import TechStack3D from './components/TechStack3D';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Mail, Compass } from 'lucide-react';
 
@@ -25,8 +27,9 @@ function App() {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
           <a href="#" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Home</a>
-          <a href="#about" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">About</a>
-          <a href="#experience" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Experience</a>
+          <a href="#about" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">About & Experience</a>
+          <a href="#tech" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Tech Stack</a>
+          <a href="#portfolio" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Portfolio</a>
           <a href="#contact" className="text-sm font-medium text-neutral-600 hover:text-purple-600 transition-colors">Contact</a>
         </div>
 
@@ -150,6 +153,16 @@ function App() {
       {/* ABOUT & EXPERIENCE SECTION */}
       <div id="about">
         <AboutExperience />
+      </div>
+
+      {/* TECH STACK SECTION */}
+      <div id="tech">
+        <TechStack3D />
+      </div>
+
+      {/* PORTFOLIO & ACHIEVEMENTS SECTION */}
+      <div id="portfolio">
+        <PortfolioAchievements />
       </div>
 
       {/* FOOTER */}
