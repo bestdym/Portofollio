@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 }
@@ -10,12 +10,27 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #FAF9F6;
-  color: #1f2937;
+  background-color: #050505; /* Deep luxury pure black */
+  color: #f3f4f6; /* High contrast off-white text */
   overflow-x: hidden;
 }
 
 /* Custom smooth scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Custom scrollbar to match the premium dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981; /* Emerald green highlight on hover */
 }
