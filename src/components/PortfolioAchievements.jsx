@@ -11,7 +11,7 @@ const projects = [
     tags: ['Three.js', 'React Three Fiber', 'GLSL', 'Tailwind CSS'],
     liveUrl: '#',
     githubUrl: '#',
-    gridClass: 'md:col-span-2 md:row-span-2 bg-gradient-to-br from-neutral-900/50 via-neutral-900/20 to-emerald-950/15'
+    gridClass: 'md:col-span-2 md:row-span-2 bg-gradient-to-br from-neutral-50 via-white to-neutral-100/40'
   },
   {
     title: 'Bunga Bali E-commerce',
@@ -21,7 +21,7 @@ const projects = [
     tags: ['React', 'Supabase', 'Stripe', 'Tailwind CSS', 'Redux'],
     liveUrl: '#',
     githubUrl: '#',
-    gridClass: 'md:col-span-1 md:row-span-2 bg-gradient-to-br from-neutral-900/40 via-neutral-900/20 to-teal-950/15'
+    gridClass: 'md:col-span-1 md:row-span-2 bg-gradient-to-br from-neutral-50 via-white to-neutral-100/30'
   },
   {
     title: 'Denah Coding',
@@ -31,7 +31,7 @@ const projects = [
     tags: ['Next.js', 'Node.js', 'PostgreSQL', 'Tailwind CSS'],
     liveUrl: '#',
     githubUrl: '#',
-    gridClass: 'md:col-span-1 md:row-span-1 bg-neutral-900/30'
+    gridClass: 'md:col-span-1 md:row-span-1 bg-neutral-50/50'
   },
   {
     title: 'Web Pariwisata Yogyakarta',
@@ -41,7 +41,7 @@ const projects = [
     tags: ['React', 'Leaflet Map', 'Tailwind CSS', 'Vite'],
     liveUrl: '#',
     githubUrl: '#',
-    gridClass: 'md:col-span-2 md:row-span-1 bg-gradient-to-br from-neutral-900/40 via-neutral-900/20 to-emerald-950/10'
+    gridClass: 'md:col-span-2 md:row-span-1 bg-gradient-to-br from-neutral-50 via-white to-neutral-100/20'
   }
 ];
 
@@ -52,7 +52,7 @@ const achievements = [
     year: '2024',
     description: 'Sertifikasi internasional dalam bidang jaringan komputer, meliputi manajemen lalu lintas data, routing dasar, keamanan nirkabel, dan konfigurasi firewall.',
     icon: ShieldCheck,
-    colorClass: 'text-emerald-400 bg-emerald-950/30 border-emerald-500/20'
+    colorClass: 'text-neutral-800 bg-neutral-100 border-neutral-200'
   },
   {
     title: 'Peserta Web Design Competition SDG 8',
@@ -60,7 +60,7 @@ const achievements = [
     year: '2024',
     description: 'Merancang dan membangun purwarupa web interaktif bertema "Pekerjaan Layak dan Pertumbuhan Ekonomi" dengan fokus pada aksesibilitas penuh dan performa tinggi.',
     icon: Award,
-    colorClass: 'text-teal-400 bg-teal-950/30 border-teal-500/20'
+    colorClass: 'text-neutral-800 bg-neutral-100 border-neutral-200'
   }
 ];
 
@@ -90,24 +90,24 @@ export default function PortfolioAchievements() {
   };
 
   return (
-    <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#050505] text-neutral-100 relative overflow-hidden">
+    <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#ffffff] text-neutral-800 relative overflow-hidden">
       <div className="max-w-6xl mx-auto w-full z-10">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
-          <div className="inline-flex items-center space-x-2 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs">
+          <div className="inline-flex items-center space-x-2 bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs">
             <Layers className="w-3.5 h-3.5" />
             <span>Showcase & Awards</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-            Karya Pilihan & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Pencapaian</span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 font-sans">
+            Karya Pilihan & <span className="text-transparent bg-clip-text bg-gradient-to-r from-black via-neutral-850 to-neutral-500">Pencapaian</span>
           </h2>
-          <p className="text-neutral-400 max-w-xl text-sm md:text-md font-light">
+          <p className="text-neutral-500 max-w-xl text-sm md:text-md font-light">
             Kombinasi karya digital fungsional dengan pengakuan sertifikasi akademis dan profesional.
           </p>
         </div>
 
-        {/* BENTO GRID PORTFOLIO (Sleek Dark Theme) */}
+        {/* BENTO GRID PORTFOLIO (High Contrast B&W Theme) */}
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px] md:auto-rows-[280px] mb-20"
           variants={containerVariants}
@@ -119,23 +119,23 @@ export default function PortfolioAchievements() {
             <motion.div
               key={idx}
               variants={cardVariants}
-              className={`group relative rounded-3xl border border-neutral-800/80 backdrop-blur-md p-7 md:p-8 flex flex-col justify-between transition-all duration-500 ease-out hover:scale-[1.02] hover:bg-neutral-900/60 hover:border-emerald-500/30 hover:shadow-xl shadow-xs overflow-hidden ${proj.gridClass}`}
+              className={`group relative rounded-3xl border border-neutral-200/80 backdrop-blur-md p-7 md:p-8 flex flex-col justify-between transition-all duration-500 ease-out hover:scale-[1.02] hover:bg-white hover:border-neutral-400 hover:shadow-md shadow-xs overflow-hidden ${proj.gridClass}`}
             >
-              {/* Background decorative shine on hover */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              {/* Background shine on hover */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-neutral-100 to-neutral-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               {/* Upper Section */}
               <div className="space-y-3 z-10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">
+                  <span className="text-xs font-semibold text-neutral-500 uppercase tracking-widest">
                     {proj.category}
                   </span>
                   
-                  {/* Action buttons appearing on hover (Emerald Glow) */}
+                  {/* Action buttons appearing on hover (Elegant B&W) */}
                   <div className="flex items-center space-x-2 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-350 ease-out">
                     <a 
                       href={proj.githubUrl} 
-                      className="h-8.5 w-8.5 rounded-full bg-neutral-950 border border-neutral-800 shadow-sm flex items-center justify-center text-neutral-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
+                      className="h-8.5 w-8.5 rounded-full bg-white border border-neutral-200 shadow-xs flex items-center justify-center text-neutral-600 hover:text-black hover:border-neutral-400 transition-colors"
                       title="View Code"
                       aria-label="GitHub"
                     >
@@ -143,7 +143,7 @@ export default function PortfolioAchievements() {
                     </a>
                     <a 
                       href={proj.liveUrl} 
-                      className="h-8.5 w-8.5 rounded-full bg-emerald-500 text-white shadow-sm flex items-center justify-center hover:bg-emerald-600 transition-colors"
+                      className="h-8.5 w-8.5 rounded-full bg-neutral-950 text-white shadow-xs flex items-center justify-center hover:bg-neutral-800 transition-colors"
                       title="View Live"
                       aria-label="Live Demo"
                     >
@@ -152,29 +152,29 @@ export default function PortfolioAchievements() {
                   </div>
                 </div>
 
-                <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                <h3 className="text-xl md:text-2xl font-bold text-neutral-950 group-hover:text-black transition-colors font-sans">
                   {proj.title}
                 </h3>
 
-                <p className="text-xs md:text-sm text-neutral-350 leading-relaxed font-light line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
+                <p className="text-xs md:text-sm text-neutral-650 leading-relaxed font-light line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
                   {proj.description}
                 </p>
               </div>
 
               {/* Lower Section (Highlights & Tags) */}
-              <div className="space-y-4 pt-4 border-t border-neutral-800/80 z-10">
+              <div className="space-y-4 pt-4 border-t border-neutral-200/80 z-10">
                 {/* Special Highlight banner */}
-                <div className="flex items-center space-x-2 text-xs font-medium text-neutral-200 bg-neutral-950/80 px-3 py-1.5 rounded-lg w-fit border border-neutral-800/40">
-                  <Cpu className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                <div className="flex items-center space-x-2 text-xs font-medium text-neutral-800 bg-neutral-100/80 px-3 py-1.5 rounded-lg w-fit border border-neutral-200/50">
+                  <Cpu className="w-3.5 h-3.5 text-neutral-900" />
                   <span>{proj.highlight}</span>
                 </div>
 
-                {/* Tag list in dark styling */}
+                {/* Tag list in light styling */}
                 <div className="flex flex-wrap gap-1.5">
                   {proj.tags.map((tag, tIdx) => (
                     <span 
                       key={tIdx} 
-                      className="text-[10px] md:text-xs bg-neutral-950 text-neutral-400 px-2.5 py-1 rounded-lg border border-neutral-800/40 group-hover:bg-emerald-950/20 group-hover:text-emerald-300 group-hover:border-emerald-500/20 transition-colors"
+                      className="text-[10px] md:text-xs bg-neutral-55 text-neutral-600 px-2.5 py-1 rounded-lg border border-neutral-200/50 group-hover:bg-neutral-100 group-hover:text-black group-hover:border-neutral-350 transition-colors font-medium"
                     >
                       {tag}
                     </span>
@@ -186,29 +186,29 @@ export default function PortfolioAchievements() {
         </motion.div>
 
         {/* SECTION SEPARATOR */}
-        <div className="w-full h-[1px] bg-neutral-800/80 my-16" />
+        <div className="w-full h-[1px] bg-neutral-200 my-16" />
 
         {/* ACHIEVEMENT SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Left Title Area */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="inline-flex items-center space-x-2 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold">
+            <div className="inline-flex items-center space-x-2 bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-1.5 rounded-full text-xs font-semibold">
               <Award className="w-3.5 h-3.5" />
               <span>Sertifikasi & Lomba</span>
             </div>
-            <h3 className="text-3xl font-bold text-white leading-tight">
+            <h3 className="text-3xl font-bold text-neutral-950 leading-tight font-sans">
               Kredibilitas <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-black via-neutral-850 to-neutral-500">
                 yang Teruji
               </span>
             </h3>
-            <p className="text-sm text-neutral-400 leading-relaxed font-light">
+            <p className="text-sm text-neutral-500 leading-relaxed font-light">
               Meningkatkan kompetensi teknis melalui proses sertifikasi internasional dan berkompetisi di tingkat mahasiswa nasional.
             </p>
           </div>
 
-          {/* Right Achievement List Area (High Contrast Dark Cards) */}
+          {/* Right Achievement List Area (Light Elegant Cards) */}
           <motion.div 
             className="lg:col-span-8 space-y-5 w-full"
             variants={containerVariants}
@@ -222,7 +222,7 @@ export default function PortfolioAchievements() {
                 <motion.div
                   key={aIdx}
                   variants={cardVariants}
-                  className="group flex flex-col md:flex-row items-start gap-5 p-6 md:p-7 bg-neutral-900/20 border border-neutral-800/80 rounded-3xl backdrop-blur-md shadow-2xs hover:shadow-sm hover:border-emerald-500/30 hover:bg-neutral-900/40 transition-all duration-300"
+                  className="group flex flex-col md:flex-row items-start gap-5 p-6 md:p-7 bg-neutral-50/50 border border-neutral-200 rounded-3xl backdrop-blur-md shadow-2xs hover:shadow-sm hover:border-neutral-350 hover:bg-neutral-50/80 transition-all duration-300"
                 >
                   {/* Glowing Icon Container */}
                   <div className={`h-14 w-14 shrink-0 rounded-2xl border flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-110 ${ach.colorClass}`}>
@@ -232,19 +232,19 @@ export default function PortfolioAchievements() {
                   {/* Content */}
                   <div className="space-y-2 flex-grow">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5">
-                      <h4 className="text-lg md:text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                      <h4 className="text-lg md:text-xl font-bold text-neutral-950 group-hover:text-black transition-colors font-sans">
                         {ach.title}
                       </h4>
-                      <span className="text-xs font-semibold text-neutral-300 bg-neutral-800 px-2.5 py-1 rounded-full w-fit">
+                      <span className="text-xs font-semibold text-neutral-500 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full w-fit">
                         {ach.year}
                       </span>
                     </div>
 
-                    <div className="text-xs md:text-sm font-medium text-emerald-400">
+                    <div className="text-xs md:text-sm font-semibold text-neutral-800">
                       {ach.issuer}
                     </div>
 
-                    <p className="text-xs md:text-sm text-neutral-300 leading-relaxed font-light">
+                    <p className="text-xs md:text-sm text-neutral-600 leading-relaxed font-light">
                       {ach.description}
                     </p>
                   </div>

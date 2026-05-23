@@ -10,8 +10,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #050505; /* Deep luxury pure black */
-  color: #f3f4f6; /* High contrast off-white text */
+  background-color: #ffffff; /* Crisp high-contrast pure white */
+  color: #0f172a; /* Sophisticated slate black text */
   overflow-x: hidden;
 }
 
@@ -20,17 +20,17 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar to match the premium dark theme */
+/* Custom minimalist scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #ffffff;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #e5e5e5;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981; /* Emerald green highlight on hover */
+  background: #a3a3a3;
 }

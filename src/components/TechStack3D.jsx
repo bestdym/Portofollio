@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Text, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
-// 1. Komponen Twinkling Stars untuk merekonstruksi latar luar angkasa
+// 1. Komponen Starfield (Floating Dust/Stars) untuk menunjang latar belakang studio
 function Starfield() {
   const starsRef = useRef();
   const starsCount = 35;
@@ -35,14 +35,14 @@ function Starfield() {
       {starsData.current.map((star, idx) => (
         <mesh key={idx} position={star.position}>
           <sphereGeometry args={[0.015, 6, 6]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
+          <meshBasicMaterial color="#a3a3a3" transparent opacity={0.6} />
         </mesh>
       ))}
     </group>
   );
 }
 
-// 2. Komponen Keycap Cherry-MX Tapered Style (Monochrome & Emerald Green Accent)
+// Komponen Keycap Cherry-MX Tapered Style (Premium Minimalist Monochrome)
 function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, isRaised, textColor }) {
   const meshRef = useRef();
 
@@ -56,8 +56,9 @@ function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, i
     meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.2);
   });
 
-  // Warna pendaran tombol saat di-hover: Selalu Emerald Green untuk pop-up neon!
-  const hoverEmissive = '#10b981';
+  // Warna pendaran tombol saat di-hover: Inversi warna high-contrast
+  const hoverColor = isHovered ? '#171717' : color;
+  const hoverTextColor = isHovered ? '#ffffff' : textColor;
 
   return (
     <group 
@@ -75,7 +76,7 @@ function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, i
       {/* Switch Stem */}
       <mesh position={[0, 0.05, 0]}>
         <boxGeometry args={[0.26, 0.15, 0.26]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.7} />
+        <meshStandardMaterial color="#d4d4d8" roughness={0.7} />
       </mesh>
 
       {/* Keycap Body: Tapered Cylinder */}
@@ -88,11 +89,11 @@ function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, i
       >
         <cylinderGeometry args={[0.18, 0.24, 0.26, 4]} />
         <meshStandardMaterial 
-          color={isHovered ? '#10b981' : color} // Berubah jadi hijau emerald saat di-hover!
+          color={hoverColor}
           roughness={0.2} 
           metalness={0.1}
-          emissive={isHovered ? hoverEmissive : '#000000'}
-          emissiveIntensity={isHovered ? 0.8 : 0}
+          emissive={isHovered ? '#ffffff' : '#000000'}
+          emissiveIntensity={isHovered ? 0.45 : 0}
         />
         
         {/* Teks Label Brand */}
@@ -100,11 +101,11 @@ function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, i
           position={[0, 0.135, 0]}
           rotation={[-Math.PI / 2, 0, -Math.PI / 4]}
           fontSize={0.08}
-          color={isHovered ? '#ffffff' : textColor || '#ffffff'}
+          color={hoverTextColor}
           fontWeight="bold"
           anchorX="center"
           anchorY="middle"
-          strokeColor={isHovered ? '#000000' : '#111111'}
+          strokeColor={isHovered ? '#000000' : (textColor === '#000000' ? '#ffffff' : '#111111')}
           strokeWidth={0.003}
         >
           {label}
@@ -114,16 +115,16 @@ function Keycap({ label, color, position, desc, isHovered, onHover, onUnhover, i
   );
 }
 
-// 3. Komponen Utama Keyboard Assembly (Monochrome / Dolch Theme dengan Aksen Hijau Emerald)
+// Komponen Utama Keyboard Assembly (Monochrome / Dolch Theme - Studio Light Version)
 function KeyboardAssembly() {
   const keyboardRef = useRef();
   const [activeDesc, setActiveDesc] = useState('DEKATKAN KURSOR UNTUK MENCOBA');
   const [activeKey, setActiveKey] = useState('');
 
-  // 18 tombol didesain dalam tema Premium Hitam & Putih (Dolch/Monochrome) dengan aksen Hijau Emerald
+  // 18 tombol didesain dalam tema Premium Hitam & Putih (Dolch/Monochrome) sesuai foto
   const keycapsData = [
     // BARIS 0 (Baris Atas)
-    { label: 'JS', color: '#10b981', textColor: '#ffffff', col: 0, row: 0, desc: 'JavaScript (ES6+): Bahasa Utama Interaktivitas Web', isRaised: true }, // Artisan ESC Keycaps: Emerald Green!
+    { label: 'JS', color: '#171717', textColor: '#ffffff', col: 0, row: 0, desc: 'JavaScript (ES6+): Bahasa Utama Interaktivitas Web', isRaised: true }, // Artisan ESC Keycap: Solid Matte Black
     { label: 'Next', color: '#171717', textColor: '#ffffff', col: 1, row: 0, desc: 'Next.js: Framework React untuk Skala Produksi Enterprise' },
     { label: 'TS', color: '#ffffff', textColor: '#000000', col: 2, row: 0, desc: 'TypeScript: Pemrograman JavaScript dengan Tipe Data Aman' },
     { label: 'HTML', color: '#ffffff', textColor: '#000000', col: 3, row: 0, desc: 'HTML5: Pondasi Struktur Halaman Web yang Semantik' },
@@ -135,7 +136,7 @@ function KeyboardAssembly() {
     { label: 'LV', color: '#ffffff', textColor: '#000000', col: 1, row: 1, desc: 'Laravel: Framework PHP Modern dengan Sintaks Elegan & Kuat' },
     { label: 'Git', color: '#171717', textColor: '#ffffff', col: 2, row: 1, desc: 'Git: standard Kolaborasi Kontrol Versi Kode' },
     { label: 'TW', color: '#ffffff', textColor: '#000000', col: 3, row: 1, desc: 'Tailwind CSS: Framework Utility-First untuk Desain Responsif Cepat' },
-    { label: 'Node', color: '#ffffff', textColor: '#000000', col: 4, row: 1, desc: 'Node.js: Runtime JavaScript Asinkron untuk Sisi Server' },
+    { label: 'Node', color: '#ffffff', textColor: '#000000', col: 4, row: 1, desc: 'Node.js: Lingkungan Runtime JavaScript Asinkron untuk Sisi Server' },
     { label: 'Vue', color: '#ffffff', textColor: '#000000', col: 5, row: 1, desc: 'Vue.js: Alternatif Framework Progresif yang Fleksibel & Ringan' },
 
     // BARIS 2 (Baris Bawah)
@@ -160,31 +161,31 @@ function KeyboardAssembly() {
   return (
     <group ref={keyboardRef} position={[0, -0.22, 0]}>
       
-      {/* 1. SCREEN PROYEKSI HOLOGRAFIS EMERALD GREEN */}
+      {/* 1. SCREEN PROYEKSI HOLOGRAFIS MONOCHROME SLATE */}
       <group position={[0, 1.6, -1.3]} rotation={[0.2, -0.2, 0]}>
         <mesh>
           <planeGeometry args={[4.6, 0.7]} />
           <meshBasicMaterial 
-            color="#10b981" 
+            color="#262626" 
             transparent 
-            opacity={0.06} 
+            opacity={0.03} 
           />
         </mesh>
         
-        {/* Glow Wireframe */}
+        {/* Frame Border */}
         <mesh position={[0, 0, -0.01]}>
           <planeGeometry args={[4.62, 0.72]} />
           <meshBasicMaterial 
-            color="#10b981" 
+            color="#a3a3a3" 
             wireframe 
             transparent 
-            opacity={0.25}
+            opacity={0.2}
           />
         </mesh>
 
         <Text
           fontSize={0.14}
-          color="#10b981" // Hologram Teks Hijau Zamrud Menyala
+          color="#171717" // Teks Proyeksi Slate Black Kontras Tinggi
           fontWeight="bold"
           anchorX="center"
           anchorY="middle"
@@ -195,30 +196,30 @@ function KeyboardAssembly() {
         </Text>
       </group>
 
-      {/* 2. CASE KEYBOARD SOLID PURE BLACK (High Contrast Minimalist) */}
+      {/* 2. CASE KEYBOARD SOLID CHROME WHITE (High Contrast Minimalist) */}
       <mesh castShadow receiveShadow position={[0, 0, 0]}>
         <boxGeometry args={[4.3, 0.24, 2.3]} />
         <meshStandardMaterial 
-          color="#0d0d0d" 
-          roughness={0.8} 
-          metalness={0.5}
+          color="#f4f4f5" 
+          roughness={0.5} 
+          metalness={0.2}
         />
       </mesh>
 
-      {/* Plat Atas Hitam */}
+      {/* Plat Atas Putih Bersih */}
       <mesh position={[0, 0.08, 0]}>
         <boxGeometry args={[4.14, 0.08, 2.14]} />
         <meshStandardMaterial 
-          color="#141414" 
-          roughness={0.7} 
-          metalness={0.6}
+          color="#ffffff" 
+          roughness={0.4} 
+          metalness={0.1}
         />
       </mesh>
 
-      {/* Kaki Karet Hitam Belakang */}
+      {/* Kaki Karet Belakang */}
       <mesh position={[0, -0.15, -0.8]}>
         <boxGeometry args={[3.8, 0.15, 0.2]} />
-        <meshStandardMaterial color="#020202" roughness={0.9} />
+        <meshStandardMaterial color="#e4e4e7" roughness={0.8} />
       </mesh>
 
       {/* 3. KEYCAPS GRID ASSEMBLY */}
@@ -251,64 +252,64 @@ function KeyboardAssembly() {
         );
       })}
 
-      {/* 4. UNDERGLOW LED KEYBOARD (Glowing Emerald Green Neon) */}
+      {/* 4. UNDERGLOW LED KEYBOARD (Glowing Pure White/Grey Glow) */}
       <pointLight 
         position={[0, -0.3, 0]} 
-        color="#10b981" 
-        intensity={3.8} 
-        distance={4.8}
+        color="#ffffff" 
+        intensity={2.8} 
+        distance={4.5}
       />
     </group>
   );
 }
 
-// Komponen Utama Section Tech Stack (High Contrast Black & White + Emerald Green Accent)
+// Komponen Utama Section Tech Stack (High Contrast Light Minimalist B&W)
 export default function TechStack3D() {
   return (
-    <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#050505] text-white relative overflow-hidden flex flex-col items-center">
-      {/* Outer space cosmic glow radial background in Emerald Green */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-500/5 rounded-full filter blur-3xl pointer-events-none" />
+    <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#ffffff] text-neutral-800 relative overflow-hidden flex flex-col items-center">
+      {/* Outer space radial background blob in light neutral */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-neutral-100/40 rounded-full filter blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto w-full z-10 flex flex-col items-center">
         {/* Header Section */}
         <div className="text-center space-y-4 mb-10 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs">
+          <div className="inline-flex items-center space-x-2 bg-neutral-100 border border-neutral-200 text-neutral-850 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs">
             <span>Interactive 3D Mechanical Keyboard</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white font-sans">
-            Kekuatan <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500">Teknologi</span> Saya
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 font-sans">
+            Kekuatan <span className="text-transparent bg-clip-text bg-gradient-to-r from-black via-neutral-800 to-neutral-500">Teknologi</span> Saya
           </h2>
-          <p className="text-neutral-400 text-sm md:text-base font-light">
+          <p className="text-neutral-500 text-sm md:text-base font-light">
             Sentuh atau dekatkan kursor Anda ke atas setiap **tombol mekanikal (keycap)** di bawah ini untuk melihat detail teknologi secara interaktif.
           </p>
         </div>
 
-        {/* 3D CANVAS AREA (Sleek Space-like Keyboard Scene in B&W + Green Theme) */}
-        <div className="w-full h-[450px] md:h-[540px] bg-[#0c0c0e] border border-neutral-800 backdrop-blur-md rounded-3xl overflow-hidden shadow-[0_0_24px_rgba(0,0,0,0.8)] hover:border-emerald-500/20 transition-colors relative">
+        {/* 3D CANVAS AREA (Sleek Studio Keyboard Scene in B&W Theme) */}
+        <div className="w-full h-[450px] md:h-[540px] bg-neutral-50/50 border border-neutral-200/80 backdrop-blur-md rounded-3xl overflow-hidden shadow-xs hover:border-neutral-350 transition-colors relative">
           <Canvas
             shadows
             camera={{ position: [0, 2.9, 4.8], fov: 40 }}
-            style={{ width: '100%', height: '100%', background: '#050507' }}
+            style={{ width: '100%', height: '100%', background: '#fafafa' }}
           >
             {/* Latar Belakang Bintang Berkelap-Kelip (Starfield) */}
             <Starfield />
 
             {/* Ambient Light - Soft global space light */}
-            <ambientLight intensity={0.35} />
+            <ambientLight intensity={0.6} />
 
             {/* Main Directional Light - Casting crisp but soft shadows */}
             <directionalLight
               castShadow
               position={[3.0, 9, 3.5]}
-              intensity={1.4}
+              intensity={1.3}
               shadow-bias={-0.001}
             />
 
-            {/* Fill Light in Emerald Green for dynamic neon reflection */}
+            {/* Fill Light in Cool White for dynamic reflection */}
             <directionalLight 
               position={[-4, 2, -2]} 
-              intensity={0.6} 
-              color="#10b981" 
+              intensity={0.4} 
+              color="#ffffff" 
             />
 
             {/* Assembly model keyboard di tengah canvas */}
@@ -323,13 +324,13 @@ export default function TechStack3D() {
               receiveShadow
             >
               <planeGeometry args={[30, 30]} />
-              <shadowMaterial opacity={0.3} />
+              <shadowMaterial opacity={0.08} />
             </mesh>
           </Canvas>
 
           {/* Floating Instructions Layer */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none flex items-center space-x-2 bg-neutral-900/40 text-neutral-300 text-xs px-3.5 py-2 rounded-full backdrop-blur-xs border border-white/5">
-            <svg className="w-3.5 h-3.5 animate-bounce text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none flex items-center space-x-2 bg-neutral-900/5 text-neutral-600 text-xs px-3.5 py-2 rounded-full backdrop-blur-xs border border-neutral-200/40">
+            <svg className="w-3.5 h-3.5 animate-bounce text-neutral-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>
             <span>Gerakkan kursor untuk menekan & melihat info tombol</span>
           </div>
         </div>
